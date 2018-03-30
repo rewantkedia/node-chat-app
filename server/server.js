@@ -16,13 +16,31 @@ io.on('connection',(socket)=>{
         console.log('Disconnected from client');
     })
 
+
+
+    socket.emit('newMessage',{
+        from: "admin",
+        text: "Welcome to the chat app",
+        createdAt: new Date().getTime()
+    })
+
+    socket.broadcast.emit('newMessage',{
+        from: "admin",
+        text: "New user joined",
+        createdAt: new Date().getTime()
+    })
     socket.on('createMessage',(msg)=>{
         console.log('Create message',msg);
-        io.emit('newMessage',{
+        io.emit('newMessage',{                       //broadcasts to every user including the current one
             from: msg.from,
             message: msg.message,
             createdAt: new Date().getTime()
         })
+        /*socket.broadcast.emit('newMessage',{         //broadcasts to every user except the current one
+            from: msg.from,
+            message: msg.message,
+            createdAt: new Date().getTime();
+        })*/
 
     })
 
