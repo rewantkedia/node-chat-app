@@ -41,14 +41,22 @@ socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',str))
     })                                       //callback is for error acknowledgements
 
     socket.on('createMessage',(msg,callback)=>{
-        console.log('Create message',msg);
-        io.emit('newMessage',generateMessage(msg.from,msg.message))
+      //  console.log('Create message',msg);
+        var us = user.getUser(socket.id)[0];
+       // console.log(us.room);
+        if(us && isRealString(msg.message)) {
+            io.to(us.room).emit('newMessage', generateMessage(us.name, msg.message));
+        }
         callback();
     })
 
     socket.on('createLocationMessage',(coords)=>{
        // var location = 'Latitude: ' + coords.latitude +'  Longitude: ' + coords.longitude;
-        io.emit('newLocationMessage',generateLocation('Admin',coords.latitude,coords.longitude));
+        var us = user.getUser(socket.id)[0];
+    if(us){
+        io.to(us.room).emit('newLocationMessage', generateLocation(us.name,coords.latitude, coords.longitude));
+    }
+
     })
 socket.on('disconnect',()=>{
     console.log('Disconnected from client');

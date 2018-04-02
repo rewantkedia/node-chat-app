@@ -24,10 +24,10 @@ class Users{
         return us;
     }
     getUserList(room){
-        var users = this.users.filter((user)=>{
+        var us = this.users.filter((user)=>{
             return user.room === room;
         })
-        var namesArray = this.users.map((user)=>{
+        var namesArray = us.map((user)=>{
             return user.name;
         })
         return namesArray;
