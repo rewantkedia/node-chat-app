@@ -1,16 +1,32 @@
 var socket = io();
 socket.on('connect',function(){ //builtin event 'connect'
     console.log('Connected to server');
-    /*socket.emit('createMessage',{
-        from: 'Rewant',
-        message: 'Hellow World'
-    })*/
+   var params = jQuery.deparam(window.location.search);
+   socket.emit('join',params,function(error){
+       if(error){
+           alert(error);
+            window.location.href = '/';
+       }
+       else{
+            console.log('No error');
+       }
+   });
+})
+
+socket.on('updateUserList',function(users){
+    //console.log(users);
+    var ol = jQuery('<ol></ol>');
+    users.forEach(function (user) {
+        ol.append(jQuery('<li></li>').text(user));
+    })
+    jQuery('#users').html(ol);
 })
 socket.on('disconnect',function(){
     console.log('Disconnected from server');
+
 })
 socket.on('newMessage',function(msg){
-    //console.log(msg);
+    console.log(msg);
     var formattedTime = moment(msg.createdAt).format('h:mm a');
     var li = jQuery('<li></li>');
     li.text(msg.from+' '+formattedTime+' : '+msg.text);
